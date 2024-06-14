@@ -1,3 +1,4 @@
+# main 함수 정의: server에서 db와 소통할 수 있는 endpoint를 정의 및 가동.
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Dependency to get DB session
 def get_db():
     db = SessionLocal()
@@ -29,24 +29,23 @@ def get_db():
     finally:
         db.close()
         
-
-@app.get("/users/{user_id}/get_users/")
-def get_for_user(
-    user_id: int, db: Session = Depends(get_db)
-):
-    return crud.get_user(db=db, id=id)
-
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Plant Comment API"}
 
-@app.post("/plants/", response_model=schemas.PlantCreate)
-def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)):
-    pass
+# plant 생성하기. (plant 모델 스키마 안에 내용 채워넣기)
+@app.post("/plants/")
+def create_plant(
+    plant_name: str, sort: str, plant: schemas.PlantCreate, db: Session = Depends(get_db)
+  ):
+    return crud.create_plant_name_sort(db=db, plant=plant, plant_name=plant_name, sort=sort)
 
 @app.post("/plants/comment/")
-def comment_on_plant(comment: schemas.CommentCreate, db: Session = Depends(get_db)):
-    pass
+def comment_on_plant(
+    comment: schemas.CommentCreate,  comment_content: str, plant_to_comment: str, db: Session = Depends(get_db)
+  ):
+  return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment)
+
     
 @app.get("/plants/status/{plant_name}", response_model=schemas.Plant)
 def get_plant_status(plant_name: str, db: Session = Depends(get_db)):
