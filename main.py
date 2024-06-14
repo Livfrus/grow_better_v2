@@ -20,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Dependency to get DB session
 def get_db():
     db = SessionLocal()
@@ -29,11 +30,47 @@ def get_db():
         db.close()
         
 
-@app.post("/users/{user_id}/items/", response_model=schemas.Item)
+
+@app.post("/users/{user_id}/items/")
 def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+    user_id: int, item:schemas.ItemCreate, db: Session = Depends(get_db)
 ):
     return crud.create_user_item(db=db, item=item, user_id=user_id)
+
+
+@app.post("/users/{user_id}/users/")
+def create_for_user(
+    id: int, user:schemas.UserCreate, db: Session = Depends(get_db)
+):
+    return crud.create_user(db=db, id=id, user=user)
+
+@app.get("/users/{user_id}/users/getsingle")
+# 단일 유저 가져오기
+def get_user(
+    user_id: int, db: Session = Depends(get_db)
+):
+    return crud.get_user(db=db, user_id=user_id)
+
+@app.get("/users/{user_id}/users/getbyemail")
+# 이메일 기준으로 가져오기
+def get_user_email(
+    user_email: str, db: Session = Depends(get_db)
+):
+    return crud.get_user_by_email(db=db, email=user_email)
+
+@app.delete("/users/{user_id}/deleteuser")
+def delete_user_by_id(
+    db: Session = Depends(get_db) # session 내에서 db 가져오기
+):
+    return crud.delete_user(db=db)
+
+
+# @app.get("/users/{user_id}/get_users/")
+# def get_for_user(
+#     user_id: int, db: Session = Depends(get_db)
+# ):
+#     return crud.get_user(db=db, id=id)
+
 
 # @app.get("/")
 # def read_root():
