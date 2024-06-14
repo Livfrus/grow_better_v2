@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from . import models, schemas # 같은 폴더에 있는거 (같은 경로)
-from models import Plant, Comments
+import models, schemas 
+# from models import Plant, Comments
 import uuid
 
 def get_user(db: Session, user_id: int):

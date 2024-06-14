@@ -12,12 +12,12 @@ DB Tables
 '''
 
 
-# class에서 Base 상속: DB인 sqlalchemy -> python class로 가져온다는 의미.
-class Plant(Base):
-    pass 
+# # class에서 Base 상속: DB인 sqlalchemy -> python class로 가져온다는 의미.
+# class Plant(Base):
+#     pass 
 
-class Comments(Base):
-    pass
+# class Comments(Base):
+#     pass
 
 
 # # Task: User, Info 모델 정의 pydantic -> SQLalchemy 형식으로 변경하기.
