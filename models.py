@@ -4,82 +4,37 @@ from sqlalchemy.orm import relationship
 
 from database import Base, engine
 import uuid
+from datetime import datetime
 
-# '''
-
-# DB Tables
-
-# '''
-
-
-# # class에서 Base 상속: DB인 sqlalchemy -> python class로 가져온다는 의미.
-# class Plant(Base):
-#     pass 
-
-# class Comments(Base):
-#     pass
-
-
-# # Task: User, Info 모델 정의 pydantic -> SQLalchemy 형식으로 변경하기.
-# class Info(Base):
-#   __tablename__ = "infos"
-#   # Question: primary key는 항상 첫 번쨰꺼?
-#   course = Column(String, primary_key=True)
-#   project = Column(String)
-
-#   info_relation = relationship("User", back_populates="user_relation")
-
-# class User(Base): 
-#   __tablename__ = "users"
-#   name = Column(String, primary_key=True)
-#   age = Column(Integer)
-#   email = Column(String, unique=True, index=True)
-#   info = Column(String)
-
-#   user_relation = relationship("Info", back_populates="info_relation")
-
-
-# class User(Base):
-#   __tablename__ = "users"
-#   id = Column(Integer, primary_key=True)
-#   email = Column(String, unique=True, index=True)
-#   is_active = Column(Boolean, default=True)
-  
-#   items = relationship("Item", back_populates="owner")
-
-# class Item(Base):
-#   __tablename__ = "items"
-#   id = Column(Integer, primary_key=True)
-#   title = Column(String, index=True)
-#   description = Column(String, index=True)
-#   owner_id = Column(Integer, ForeignKey("users.id"))
-
-#   owner = relationship("User", back_populates="items")
- 
 '''
 
 DB Tables
 
 '''
-class User(Base):
-    __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
-    email = Column(String, unique=True, index=True)
-    is_active = Column(Boolean, default=True)
+# class에서 Base 상속: DB인 sqlalchemy -> python class로 가져온다는 의미.
+class Plant(Base):
+  __tablename__ = "plants"
 
-    items = relationship("Item", back_populates="owner")
-    
-class Item(Base):
-    __tablename__ = "items"
-    
-    id = Column(Integer, primary_key=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-    
-    owner = relationship("User", back_populates="items")    
-    
+  id = Column(Integer, primary_key=True) 
+  plant_name = Column(String, unique=True) # 이름은 고유값
+  growth_stage = Column(String, index=True) # 정렬 가능한 string (lv1, 2, 3)
+  sort = Column(String, index=True) # 정렬 가능한 string (A, B, C)
+  plant_score = Column(Integer) # 누적할 점수값
+  
+  comment_plant = relationship("Comments", back_populates="comments")
+
+
+class Comment(Base):
+  __tablename__ = "comments"
+
+  id = Column(Integer, primary_key=True) # id 고유값
+  comment_score = Column(Integer) # 변환할 값
+  comment_time = Column(datetime) # 날짜와 시간 => 확인 필요
+  plant_to_comment = Column(String, ForeignKey("plants.id")) # 어떤 대상으로 연결할지: plant의 id로 연결.
+
+  plant_comment = relationship("Plant", back_populates="plants")
+
 # Create all tables in the database
 # 베이스로 넣어놓은 모든 클래스 생성, DB파일이 생성됨. DB 파일 생성하고싶으면 코드 무조건 있어야함. 
 Base.metadata.create_all(bind=engine)
