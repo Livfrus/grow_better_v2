@@ -51,6 +51,13 @@ def create_plant(
 def comment_on_plant(
     comment: schemas.CommentCreate,  comment_content: str, plant_to_comment: str, db: Session = Depends(get_db)
   ):
+  comment_rater = CommentRater(api_key=OPENAI_API_KEY)
+  # 1. parsing: comment -> json
+  response = comment_rater.rate_comment(comment_content)
+  
+  # 2. output 다루기 
+  sum(response.)
+  
   return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment)
 
     
