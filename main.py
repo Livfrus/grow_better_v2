@@ -1,4 +1,7 @@
-# main 함수 정의: server에서 db와 소통할 수 있는 endpoint를 정의 및 가동.
+# main.py: server에서 db와 소통할 수 있는 endpoint를 정의 및 가동.
+# 실제 사용되는 HTTP method (get, post, put, delete)에 대한 처리 정의
+# @app.get("/") decorator 문법 이용해 url 함수정의 가능.
+# 실행 code: fastapi dev main.py --port portno
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +11,7 @@ import models, crud, schemas
 from rate_comments import CommentRater
 import crud, models, schemas
 
-models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine) # db engine에 저장
 
 app = FastAPI()
 
@@ -22,7 +25,8 @@ app.add_middleware(
 )
 
 # Dependency to get DB session
-def get_db():
+# DB session 불러오기
+def get_db(): 
     db = SessionLocal()
     try:
         yield db
@@ -34,12 +38,15 @@ def read_root():
     return {"message": "Welcome to the Plant Comment API"}
 
 # plant 생성하기. (plant 모델 스키마 안에 내용 채워넣기)
+# 매개변수에 datatype 지정
 @app.post("/plants/")
 def create_plant(
     plant_name: str, sort: str, plant: schemas.PlantCreate, db: Session = Depends(get_db)
   ):
     return crud.create_plant_name_sort(db=db, plant=plant, plant_name=plant_name, sort=sort)
 
+# comment 생성
+# comment 생성하고, 해당 plant에 물 주기=> 계산은 어디서?
 @app.post("/plants/comment/")
 def comment_on_plant(
     comment: schemas.CommentCreate,  comment_content: str, plant_to_comment: str, db: Session = Depends(get_db)

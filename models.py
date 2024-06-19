@@ -1,4 +1,5 @@
 # Models: 최종적으로 DB에 저장되는 Schema (테이블 형식 정의하기)
+# DB에 들어갈 테이블 구조 정의학 
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
@@ -13,11 +14,12 @@ DB Tables
 '''
 
 # class에서 Base 상속: DB인 sqlalchemy -> python class로 가져온다는 의미.
+# DB에 들어갈 모든 항목들 정의
 class Plant(Base):
-  __tablename__ = "plants"
+  __tablename__ = "plants" # 모델에 의해 관리되는 테이블의 ㅇ름
 
-  id = Column(String, primary_key=True)  # uuid? 
-  plant_name = Column(String, unique=True) # 이름은 고유값
+  id = Column(String, primary_key=True)  # uuid로 정의
+  plant_name = Column(String, unique=True, unllable=False) # 이름은 고유값
   growth_stage = Column(String, index=True, default="lv1") # 정렬 가능한 string (lv1, 2, 3)
   sort = Column(String, index=True) # 정렬 가능한 string (A, B, C)
   plant_score = Column(Integer, default=0) # 누적할 점수값
