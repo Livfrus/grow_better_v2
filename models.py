@@ -19,7 +19,7 @@ class Plant(Base):
   __tablename__ = "plants" # 모델에 의해 관리되는 테이블의 ㅇ름
 
   id = Column(String, primary_key=True)  # uuid로 정의
-  plant_name = Column(String, unique=True, unllable=False) # 이름은 고유값
+  plant_name = Column(String, unique=True) # 이름은 고유값
   growth_stage = Column(String, index=True, default="lv1") # 정렬 가능한 string (lv1, 2, 3)
   sort = Column(String, index=True) # 정렬 가능한 string (A, B, C)
   plant_score = Column(Integer, default=0) # 누적할 점수값
