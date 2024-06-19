@@ -43,7 +43,7 @@ def read_root():
 def create_plant(
     plant_name: str, sort: str, plant: schemas.PlantCreate, db: Session = Depends(get_db)
   ):
-    return crud.create_plant_name_sort(db=db, plant=plant, plant_name=plant_name, sort=sort)
+    return crud.create_plant_name_sort(db=db, plant=plant,plant_name=plant_name, sort=sort)
 
 # comment 생성
 # comment 생성하고, 해당 plant에 물 주기=> 계산은 어디서?
@@ -56,22 +56,25 @@ def comment_on_plant(
     
 @app.get("/plants/status/{plant_name}", response_model=schemas.Plant)
 def get_plant_status(plant_name: str, db: Session = Depends(get_db)):
-    pass
+    return crud.get_plant_status(db=db, plant_name=plant_name)
 
 
 @app.delete("/plants/status/{plant_name}")
-def delete_plant(plant_name: str, db: Session = Depends(get_db)):
-    pass
+def delete_plant(
+  plant_name: str, db: Session = Depends(get_db)
+  ):
+    return crud.delete_plant_db(db=db, plant_name=plant_name)
+
 
 @app.get("/plants/comments/{plant_name}", response_model=list[schemas.Comment])
 def get_comments_by_plant(plant_name: str, db: Session = Depends(get_db)):
-    pass
+    return crud.get_comments_by_plant(db=db, plant_name=plant_name)
 
 @app.get("/plants/all", response_model=list[schemas.Plant])
 def get_all_plants(db: Session = Depends(get_db)):
-    pass
+    return crud.get_all_plants(db=db)
 
 @app.get("/plants/growth_stage/{growth_stage}", response_model=list[schemas.Plant])
 def get_plants_by_growth_stage(growth_stage: str, db: Session = Depends(get_db)):
-    pass
+    return crud.get_plants_by_growth_stage(db=db, growth_stage=growth_stage)
 

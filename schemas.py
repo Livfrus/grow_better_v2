@@ -3,6 +3,8 @@
 # 출력 부분에 대한 추가적인 코딩 -> 원래 DB의 것이 아닌 것...
 from pydantic import BaseModel
 import uuid
+from typing import Optional
+
 
 '''
 
@@ -14,16 +16,18 @@ Pydantic Data Validation Schemas (Response and Request)
 # 응답 데이터에서 필요한 필드만 '선택'해 클라이언트에 반환.
 class Plant(BaseModel):
 # input value 말고 기본 값들 잡아주기.
-  id: str = uuid.uuid4() 
   plant_name: str
+  growth_stage: str
   sort: str
+  plant_score: int
 # 기본 모델 구조 상속받기-> 그냥 practice가 그래.
 class PlantCreate(Plant):
   pass
 
 class Comment(BaseModel):
-  id: str = uuid.uuid4()
+  comment_content: str
   comment_score: int # 변환할 값 (기본값 0)
+  plant_to_comment: str
 
 # 기본 모델 구조 상속받기
 class CommentCreate(Comment):

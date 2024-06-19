@@ -18,8 +18,8 @@ DB Tables
 class Plant(Base):
   __tablename__ = "plants" # 모델에 의해 관리되는 테이블의 ㅇ름
 
-  id = Column(String, primary_key=True)  # uuid로 정의
-  plant_name = Column(String, unique=True) # 이름은 고유값
+  id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+  plant_name = Column(String, index=True) # 이름은 고유값
   growth_stage = Column(String, index=True, default="lv1") # 정렬 가능한 string (lv1, 2, 3)
   sort = Column(String, index=True) # 정렬 가능한 string (A, B, C)
   plant_score = Column(Integer, default=0) # 누적할 점수값
@@ -30,7 +30,7 @@ class Plant(Base):
 class Comment(Base):
   __tablename__ = "comments"
 
-  id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())) # id 고유값
+  id = Column(Integer, primary_key=True, index=True, autoincrement=True)
   comment_content = Column(String) # comment 내용
   comment_score = Column(Integer, default=0) # 변환할 값 (기본값 0)
   # comment_time = Column(String) # 날짜와 시간 => 확인 필요
