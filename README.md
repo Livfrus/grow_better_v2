@@ -1,1 +1,1 @@
-0620 rate_comment 제외 완료
+0620 comment를 openai 가져와서 점수 반환까지 완료했으나, Plant에 점수 누적하기 에러뜨고잇음 (14:00)
