@@ -51,14 +51,16 @@ def create_plant(
 def comment_on_plant(
     comment: schemas.CommentCreate,  comment_content: str, plant_to_comment: str, db: Session = Depends(get_db)
   ):
-  comment_rater = CommentRater(api_key=OPENAI_API_KEY)
-  # 1. parsing: comment -> json
+
+  comment_rater = CommentRater() # 인스턴스 생성 (API_KEY 불러오기)
+  # 1. parsing: comment -> json 변경해 response에 저장.
   response = comment_rater.rate_comment(comment_content)
   
-  # 2. output 다루기 
-  sum(response.)
+  # 2. output 다루기 -> db 내 comment_score에 update (내부 동작 => input param 받을 필요없음)
+  comment_score = sum(response.values()) # 총합 저장하기
   
-  return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment)
+  # comment_score도 업데이트하기
+  return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score)
 
     
 @app.get("/plants/status/{plant_name}", response_model=schemas.Plant)

@@ -14,14 +14,17 @@ def create_plant_name_sort(db: Session, plant: schemas.PlantCreate, plant_name: 
     return db_plant
 
 # comment DB 생성
-def create_comment_db(db: Session, comment: schemas.CommentCreate, comment_content: str, plant_to_comment: str):
-  db_comment = models.Comment(comment_content=comment_content, plant_to_comment=plant_to_comment) # row 형태 준비 (넣을 아이템 준비) -> plant schema 전체 가져오기
+def create_comment_db(db: Session, comment: schemas.CommentCreate, comment_content: str, plant_to_comment: str, comment_score: int):
+  db_comment = models.Comment(comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score) # row 형태 준비 (넣을 아이템 준비) -> plant schema 전체 가져오기
+  # comment_score 내서 plant_score에 누적 저장시키기.
+  db_plant = models.Plant(plant_score=comment_score)
   db.add(db_comment)
+  db.add(db_plant)
   db.commit() # commit: 실질적 저장 단게
   db.refresh(db_comment)
+  db.refresh(db_plant)
   return db_comment
 
-# plant, comment DB 생성까지는 완료. 이제 다른애들을 어떻게 다루지?
 # def get_plant_status_db(db: Session, )
 
 def delete_plant_db(db: Session, plant_name: str):
@@ -41,4 +44,3 @@ def get_all_plants(db: Session):
 def get_plants_by_growth_stage(db: Session, growth_stage: str):
     return db.query(models.Plant).filter(models.Plant.growth_stage == growth_stage).all()
   
-
