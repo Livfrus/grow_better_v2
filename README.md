@@ -1,1 +1,1 @@
-2406 ahyeong get this repository
+0620 rate_comment 제외 완료
