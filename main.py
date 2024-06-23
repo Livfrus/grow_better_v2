@@ -57,8 +57,8 @@ def comment_on_plant(
   response = comment_rater.rate_comment(comment_content)
   
   # 2. output 다루기 -> db 내 comment_score에 update (내부 동작 => input param 받을 필요없음)
-  comment_score = sum(response.values()) # 총합 저장하기
-  
+  comment_score = sum(response.values()) # 총합 저장하기 -> score를 정수형태로 저장
+
   # comment_score도 업데이트하기
   return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score)
 
