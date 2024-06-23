@@ -63,7 +63,7 @@ def comment_on_plant(
   return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score)
 
     
-@app.get("/plants/status/{plant_name}", response_model=schemas.Plant)
+@app.get("/plants/status/{plant_name}")
 def get_plant_status(plant_name: str, db: Session = Depends(get_db)):
     return crud.get_plant_status(db=db, plant_name=plant_name)
 
@@ -75,15 +75,15 @@ def delete_plant(
     return crud.delete_plant_db(db=db, plant_name=plant_name)
 
 
-@app.get("/plants/comments/{plant_name}", response_model=list[schemas.Comment])
+@app.get("/plants/comments/{plant_name}")
 def get_comments_by_plant(plant_name: str, db: Session = Depends(get_db)):
     return crud.get_comments_by_plant(db=db, plant_name=plant_name)
 
-@app.get("/plants/all", response_model=list[schemas.Plant])
+@app.get("/plants/all")
 def get_all_plants(db: Session = Depends(get_db)):
     return crud.get_all_plants(db=db)
 
-@app.get("/plants/growth_stage/{growth_stage}", response_model=list[schemas.Plant])
+@app.get("/plants/growth_stage/{growth_stage}")
 def get_plants_by_growth_stage(growth_stage: str, db: Session = Depends(get_db)):
     return crud.get_plants_by_growth_stage(db=db, growth_stage=growth_stage)
 

@@ -16,10 +16,23 @@ def create_plant_name_sort(db: Session, plant: schemas.PlantCreate, plant_name: 
 # comment DB 생성 => 함수의 parameter로 잡지 않기. 파라미터로 불러오면 그거댐
 def create_comment_db(db: Session, comment: schemas.CommentCreate, comment_content: str, plant_to_comment: str, comment_score:int):
   db_comment = models.Comment(comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score) # row 형태 준비 (넣을 아이템 준비) -> plant schema 전체 가져오기
+  
   # comment_score 내서 plant_score에 누적 저장시키기.
-  # db_plant = db.query(models.Plant).filter_by(plant_name=plant_to_comment).first()
-  # 없을 경우 에러처리 ???x
-  # plant_to_comment랑 같은 이름인 식물 객체 불러오기
+  db_plant = db.query(models.Plant).filter(models.Plant.plant_name == plant_to_comment).first() # plant_to_comment랑 같은 이름인 식물 객체 불러오기
+  
+  if db_plant: # 찾은 경우
+    db_plant.plant_score += comment_score
+    
+    # growth_stage 업데이트 로직 추가
+    if db_plant.plant_score < 15: # 0-15: lv1
+        db_plant.growth_stage = "lv1"
+    elif db_plant.plant_score < 30: # 15-30: lv2
+        db_plant.growth_stage = "lv2"
+    else:
+        db_plant.growth_stage = "lv3" # 30 이상: lv3
+            
+    db.add(db_plant)
+  
   # db_plant.plant_score += comment_score # '객체'불러와서 직접 추가 
   db.add(db_comment)
   db.commit() # commit: 실질적 저장 단게
@@ -35,7 +48,7 @@ def delete_plant_db(db: Session, plant_name: str):
   db.commit()
   
 def get_plant_status(db: Session, plant_name: str):
-  return db.query(models.Plant).filter_by(plant_name=plant_name).first()
+  return db.query(models.Plant).filter(models.Plant.plant_name == plant_name).all()
 
 def get_comments_by_plant(db: Session, plant_name: str):
     return db.query(models.Comment).filter_by(plant_to_comment=plant_name).all()
