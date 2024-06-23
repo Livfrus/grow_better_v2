@@ -6,19 +6,19 @@ import models, schemas
 import uuid
 
 # plant DB 생성
-def create_plant_name_sort(db: Session, plant: schemas.PlantCreate, plant_name: str, sort: str):
-    db_plant = models.Plant(plant_name=plant_name, sort=sort)
+def create_plant_name_sort(db: Session, plant: schemas.PlantCreate):
+    db_plant = models.Plant(**plant.dict())
     db.add(db_plant)
     db.commit()
     db.refresh(db_plant)
     return db_plant
 
 # comment DB 생성 => 함수의 parameter로 잡지 않기. 파라미터로 불러오면 그거댐
-def create_comment_db(db: Session, comment: schemas.CommentCreate, comment_content: str, plant_to_comment: str, comment_score:int):
-  db_comment = models.Comment(comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score) # row 형태 준비 (넣을 아이템 준비) -> plant schema 전체 가져오기
+def create_comment_db(db: Session, comment: schemas.CommentCreate, comment_score:int):
+  db_comment = models.Comment(**comment.dict(),comment_score=comment_score) # row 형태 준비 (넣을 아이템 준비) -> schema 전체 가져오기
   
   # comment_score 내서 plant_score에 누적 저장시키기.
-  db_plant = db.query(models.Plant).filter(models.Plant.plant_name == plant_to_comment).first() # plant_to_comment랑 같은 이름인 식물 객체 불러오기
+  db_plant = db.query(models.Plant).filter(models.Plant.plant_name == db_comment.plant_to_comment).first() # plant_to_comment랑 같은 이름인 식물 객체 불러오기
   
   if db_plant: # 찾은 경우
     db_plant.plant_score += comment_score

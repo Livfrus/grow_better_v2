@@ -41,26 +41,34 @@ def read_root():
 # 매개변수에 datatype 지정
 @app.post("/plants/")
 def create_plant(
-    plant_name: str, sort: str, plant: schemas.PlantCreate, db: Session = Depends(get_db)
+    plant: schemas.PlantCreate, db: Session = Depends(get_db)
   ):
-    return crud.create_plant_name_sort(db=db, plant=plant,plant_name=plant_name, sort=sort)
+    return crud.create_plant_name_sort(db=db, plant=plant)
 
 # comment 생성
 # comment 생성하고, 해당 plant에 물 주기=> 계산은 어디서?
 @app.post("/plants/comment/")
 def comment_on_plant(
-    comment: schemas.CommentCreate,  comment_content: str, plant_to_comment: str, db: Session = Depends(get_db)
+    comment: schemas.CommentCreate, db: Session = Depends(get_db)
   ):
 
+  # comment instance 불러오기
+  content = comment.comment_content
   comment_rater = CommentRater() # 인스턴스 생성 (API_KEY 불러오기)
   # 1. parsing: comment -> json 변경해 response에 저장.
-  response = comment_rater.rate_comment(comment_content)
+  response = comment_rater.rate_comment(content)
+
   
   # 2. output 다루기 -> db 내 comment_score에 update (내부 동작 => input param 받을 필요없음)
   comment_score = sum(response.values()) # 총합 저장하기 -> score를 정수형태로 저장
 
+  # 디버깅
+  print(f"response: {response}")
+  print(f"comment_score: {comment_score}")
+    
+
   # comment_score도 업데이트하기
-  return crud.create_comment_db(db=db, comment=comment, comment_content=comment_content, plant_to_comment=plant_to_comment, comment_score=comment_score)
+  return crud.create_comment_db(db=db, comment=comment, comment_score=comment_score)
 
     
 @app.get("/plants/status/{plant_name}")
